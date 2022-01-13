@@ -10,7 +10,9 @@ const formatMessage = require('./utils/messages')
 const {
   userJoin,
   getCurrentUser,
-}=require('./utils/users')
+  getRoomUsers,
+  userLeave,
+} = require("./utils/users");
 
 //statis folder
 app.use(express.static(path.join(__dirname, 'public')))
