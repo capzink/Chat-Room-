@@ -45,7 +45,11 @@ io.on('connection', socket =>{
     
     //runs when client disconnects
     socket.on('disconnect', ()=>{
-        io.emit('message',formatMessage(BotName, 'A user has left the chat'))
+        const user  = userLeave(socket.id)
+        if(user){
+            io.to(user.room).emit('message',formatMessage(BotName, `${user.username} has left the chat`))
+
+        }
     })
 })
 const port = process.env.port || 3000
