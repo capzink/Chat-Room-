@@ -22,7 +22,7 @@ io.on('connection', socket =>{
     })
     //listen for chatmessage
     socket.on("chatmessage", (msg) => {
-      console.log(msg);
+      io.emit('message', msg)
     });
 })
 const port = process.env.port || 3000
