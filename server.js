@@ -35,7 +35,14 @@ io.on('connection', socket =>{
           "message",
           formatMessage(BotName, `${user.username} has join the chat`)
         );
+
+        //send users and room info
+        io.to(user.room).emit('roomusers',{
+            room:user.room,
+            users:getCurrentUser(user.room)
+        })
     });
+
     
     //listen for chatmessage
     socket.on("chatmessage", msg => {
@@ -47,8 +54,16 @@ io.on('connection', socket =>{
     socket.on('disconnect', ()=>{
         const user  = userLeave(socket.id)
         if(user){
-            io.to(user.room).emit('message',formatMessage(BotName, `${user.username} has left the chat`))
+          io.to(user.room).emit(
+            "message",
+            formatMessage(BotName, `${user.username} has left the chat`)
+          );
 
+          //send users and room info
+          io.to(user.room).emit("roomusers", {
+            room: user.room,
+            users: getCurrentUser(user.room),
+          });
         }
     })
 })
