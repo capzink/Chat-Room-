@@ -19,24 +19,28 @@ const BotName = 'ChatBot'
 io.on('connection', socket =>{
 
     socket.on("joinroom", ({username, room})=>{
-        const user = userJoin(username, room, socket.id);
-        socket.join(user.room)
 
+      const user = userJoin(socket.id, username, room);
+      socket.join(user.room);
 
       //Welcome current user
       socket.emit("message", formatMessage(BotName, "Welcome to the chat"));
 
       //Broadcast when user connects
-      socket.broadcast.to(user.room).emit(
-        "message",
-        formatMessage(BotName, "A user has joined the chat")
-      );
+      socket.broadcast
+        .to(user.room)
+        .emit(
+          "message",
+          formatMessage(BotName, `${user.username} has join the chat`)
+        );
     });
+    
     //listen for chatmessage
-    socket.on("chatmessage", (msg) => {
-      io.emit('message',formatMessage('USER', msg))
+    socket.on("chatmessage", msg => {
+      const user = getCurrentUser(socket.id);
+      io.to(user.room).emit("message", formatMessage(user.username, msg));
     });
-
+    
     //runs when client disconnects
     socket.on('disconnect', ()=>{
         io.emit('message',formatMessage(BotName, 'A user has left the chat'))
