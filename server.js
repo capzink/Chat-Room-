@@ -20,8 +20,10 @@ io.on('connection', socket =>{
     socket.on('disconnect', ()=>{
         io.emit('message', 'A user has left the chat')
     })
-    
+    //listen for chatmessage
+    socket.on("chatmessage", (msg) => {
+      console.log(msg);
+    });
 })
-
 const port = process.env.port || 3000
 server.listen(port, console.log('listening to port', port))
